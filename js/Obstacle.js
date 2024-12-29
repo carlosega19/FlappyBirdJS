@@ -1,5 +1,5 @@
 class Obstacle {
-    constructor(canvas, adder) {
+    constructor(canvas, adder, obstacleImg) {
         this.speed = 1 + adder;
         this.spaceBetween = 150;
         this.x = canvas.width;
@@ -8,8 +8,7 @@ class Obstacle {
         this.height = canvas.height;
         this.passed = false;
 
-        this.image = new Image();
-        this.image.src = "./assets/pipe-green.png";
+        this.image = obstacleImg;
     }
 
     update() {

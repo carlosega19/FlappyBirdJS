@@ -15,6 +15,9 @@ let lastFrame = 0;
 
 
 // BACKGORUND VARIABLES
+let obstacleImg = new Image();
+obstacleImg.src = "./assets/pipe-green.png";
+
 let back = new Image();
 back.src = "./assets/background-day.png";
 let floor = new Image();
@@ -60,7 +63,9 @@ function update(deltaTime) {
     obstacles.forEach(obstacle => {
         if (player.checkCollisions(obstacle)) {
             isRunning = false;
-            setTimeout(resetGame, 3000);
+            setTimeout(()=>{
+                location.reload();
+            }, 3000);
             return;
         }
     });
@@ -79,11 +84,10 @@ function update(deltaTime) {
 
     // New Obstacles
     timePassed += deltaTime;
-    let newInterval = Math.max(1.5, 4 - (timePassed/10));
+    let newInterval = Math.max(2, 4 - (timePassed/10));
 
     if (timePassed - lastSpawn >= newInterval) {
-        console.log("apareciendo");
-        obstacles.push(new Obstacle(canvas, timePassed / 100));
+        obstacles.push(new Obstacle(canvas, timePassed / 100, obstacleImg));
         lastSpawn = timePassed;
     }
 }
@@ -93,6 +97,7 @@ function draw() {
     drawBack();
     player.draw(ctx);
     obstacles.forEach(e=>e.draw(ctx));
+    drawPoints();
 }
 
 function drawBack() {
@@ -117,4 +122,28 @@ function drawBack() {
     }
 }
 
-init();
+const digitImages = {};
+
+function preloadDigits(callback) {
+
+    for (let i = 0; i <= 9; i++) {
+        const img = new Image();
+        img.src = `./assets/numbers/${i}.png`;
+        digitImages[i] = img;
+    }
+    console.info("IMAGES LOADED SUCCESFULLY");
+    callback();
+}
+
+function drawPoints() {
+    const points = POINTS.toString();
+    for (let i = 0; i < points.length; i++) {
+        let img = digitImages[parseInt(points[i])];
+        ctx.drawImage(img, 50+i*25, 50, 25, 40);   
+    }
+}
+
+preloadDigits(() => {
+    init();
+});
+
